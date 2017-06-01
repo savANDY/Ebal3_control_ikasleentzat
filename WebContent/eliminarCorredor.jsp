@@ -30,7 +30,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-4 col-md-offset-2">
-				<form>
+				<form action="corredorBorrado.jsp">
 					<div class="form-group">
 						<h3>
 							<span class="label label-default">Nombre de corredor</span>

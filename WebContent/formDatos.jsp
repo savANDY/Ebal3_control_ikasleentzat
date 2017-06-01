@@ -34,20 +34,76 @@
 
 			</div>
 		</div>
+		
+		
+		<%
+		
+		ControladorCorredor controladorCorredor;
+		controladorCorredor = new ControladorCorredor();
+		
+		ControladorEtapa controladorEtapa;
+		controladorEtapa = new ControladorEtapa();
+		
+		ControladorClasificacion controladorClasificacion;
+		controladorClasificacion = new ControladorClasificacion();
+		
+		String nuevoIdCorredor;
+		String nuevoIdEtapa;
+		String nuevaPosicion;
+		
+		nuevoIdCorredor = request.getParameter("idCorredor");
+		nuevoIdEtapa = request.getParameter("idEtapa");
+		nuevaPosicion = request.getParameter("idPosicion");
+		
+		if ((nuevoIdCorredor != null) && (nuevoIdEtapa != null) && (nuevaPosicion != null)){
+			
+			try {
+			int nuevoIdCorredorInt = Integer.parseInt(nuevoIdCorredor);
+			int nuevoIdEtapaInt = Integer.parseInt(nuevoIdEtapa);
+			int nuevoPosicionInt = Integer.parseInt(nuevaPosicion);
+			} catch (Exception e) {
+				out.println("No has insertado bien los datos");
+			}
+			
+			try {
+				controladorClasificacion.insertarNueva(nuevoIdCorredorInt, nuevoIdEtapaInt, nuevoPosicionInt);
+			} catch (Exception e) {
+				out.println("No se ha podido insertar la nueva clasificacion a la BBDD");
+			}
+			
+		}
+		
+		
+		ArrayList<Corredor> corredores;
+		corredores = controladorCorredor.seleccionarTodos();
+		
+		ArrayList<Etapa> etapas;
+		etapas = controladorEtapa.seleccionarTodas();
+		
+		ArrayList<Clasificacion> clasificaciones;
+		clasificaciones = controladorClasificacion.seleccionarTodos();
+		
+		%>
+		
+		
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
-				<form action="">
+				<form action="formDatos.jsp">
 					<div class="form-group">
 						<h3>
 							<span class="label label-default">Corredor</span>
 						</h3>
 
 						<select class="form-control" name="idCorredor">
-							<option></option>
-							<option value="">Nairo Quintana</option>
-							<option value="">Gorka Izagirre</option>
-							<option value="">Jesus Herrada</option>
-							<option value="">Winner Anakona</option>
+							
+							
+							<%
+							for (Corredor corr : corredores){
+							%>
+							
+							<option value="<%=corr.getId()%>"><%=corr.getNombre()%> <%=corr.getApellido()%></option>
+							
+							<% } %>
 						</select>
 
 					</div>
@@ -56,19 +112,15 @@
 						<h3>
 							<span class="label label-default">Etapa</span>
 						</h3>
-
+<%
+						for (Etapa etap : etapas){
+						%>
 						<div class="radio">
 							<input type="radio" name="idEtapa" id=""
-								value="">Alghero - Olbia
+								value="<%=etap.getId()%>"><%=etap.getSalida()%> - <%=etap.getLlegada()%>
 						</div>
-						<div class="radio">
-							<input type="radio" name="idEtapa" id=""
-								value="">Olbia - Tortoli
-						</div>
-						<div class="radio">
-							<input type="radio" name="idEtapa" id=""
-								value="">Pordenano - Asiago
-						</div>
+						
+						<%} %>
 					</div>
 					
 					<div class="form-group">
@@ -95,21 +147,21 @@
 						<th>id corredor</th>
 						<th>posicion</th>
 					</tr>
+					
+					<%
+					for (Clasificacion clasif : clasificaciones) {
+					%>
+					
 					<tr>
-						<td>1</td>
-						<td>1</td>
-						<td>13></td>
+						<td><%=clasif.getId_etapa()%></td>
+						<td><%=clasif.getId_corredor()%></td>
+						<td><%=clasif.getPosicion()%></td>
 					</tr>
-					<tr>
-						<td>1</td>
-						<td>2</td>
-						<td>4></td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td>4</td>
-						<td>56</td>
-					</tr>
+					
+					<%
+					}
+					%>
+					
 				</table>
 			</div>
 		</div>

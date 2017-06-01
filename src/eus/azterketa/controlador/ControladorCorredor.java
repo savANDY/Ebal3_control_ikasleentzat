@@ -15,4 +15,13 @@ public class ControladorCorredor {
 	}
 
 	
+	public ArrayList<Corredor> seleccionarTodos(){
+		
+		ArrayList<Corredor> corredores; 
+		
+		corredores = modeloCorredor.seleccionarTodos();
+		return corredores;
+		
+	}
+	
 }
