@@ -34,58 +34,96 @@
 
 			</div>
 		</div>
-		
-		
+
+
 		<%
-		
-		ControladorCorredor controladorCorredor;
-		controladorCorredor = new ControladorCorredor();
-		
-		ControladorEtapa controladorEtapa;
-		controladorEtapa = new ControladorEtapa();
-		
-		ControladorClasificacion controladorClasificacion;
-		controladorClasificacion = new ControladorClasificacion();
-		
-		String nuevoIdCorredor;
-		String nuevoIdEtapa;
-		String nuevaPosicion;
-		
-		nuevoIdCorredor = request.getParameter("idCorredor");
-		nuevoIdEtapa = request.getParameter("idEtapa");
-		nuevaPosicion = request.getParameter("idPosicion");
-		
-		if ((nuevoIdCorredor != null) && (nuevoIdEtapa != null) && (nuevaPosicion != null)){
-			
-			try {
-			int nuevoIdCorredorInt = Integer.parseInt(nuevoIdCorredor);
-			int nuevoIdEtapaInt = Integer.parseInt(nuevoIdEtapa);
-			int nuevoPosicionInt = Integer.parseInt(nuevaPosicion);
-			} catch (Exception e) {
-				out.println("No has insertado bien los datos");
+			ControladorCorredor controladorCorredor;
+			controladorCorredor = new ControladorCorredor();
+
+			ControladorEtapa controladorEtapa;
+			controladorEtapa = new ControladorEtapa();
+
+			ControladorClasificacion controladorClasificacion;
+			controladorClasificacion = new ControladorClasificacion();
+
+			String nuevoIdCorredor = null;
+			String nuevoIdEtapa = null;
+			String nuevaPosicion = null;
+
+			nuevoIdCorredor = request.getParameter("idCorredor");
+			nuevoIdEtapa = request.getParameter("idEtapa");
+			nuevaPosicion = request.getParameter("posicion");
+
+			boolean nuevaInsercion = false;
+
+			if ((nuevoIdCorredor != null) && (nuevoIdEtapa != null) && (nuevaPosicion != null) && (nuevoIdCorredor != "") && (nuevoIdEtapa != "") && (nuevaPosicion != "")) {
+
+				int nuevoIdCorredorInt = 0;
+				int nuevoIdEtapaInt = 0;
+				int nuevaPosicionInt = 0;
+
+				try {
+					nuevoIdCorredorInt = Integer.parseInt(nuevoIdCorredor);
+					nuevoIdEtapaInt = Integer.parseInt(nuevoIdEtapa);
+					nuevaPosicionInt = Integer.parseInt(nuevaPosicion);
+				} catch (Exception e) {
+					%>
+					<div class="alert alert-danger">
+					<strong>¡Atención!</strong>No has insertado bien los datos.
+				</div>
+					<%
+				}
+
+				if ((nuevoIdCorredorInt != 0) && (nuevoIdEtapaInt != 0) && (nuevaPosicionInt != 0)) {
+					Clasificacion nuevaClasificacion = new Clasificacion();
+					nuevaClasificacion.setId_corredor(nuevoIdCorredorInt);
+					nuevaClasificacion.setId_etapa(nuevoIdEtapaInt);
+					nuevaClasificacion.setPosicion(nuevaPosicionInt);
+					try {
+						controladorClasificacion.insertarNueva(nuevaClasificacion);
+						nuevaInsercion = true;
+					} catch (Exception e) {
+						%>
+						<div class="alert alert-danger">
+						<strong>¡Atención!</strong>No se ha podido insertar la nueva Calificacion a la BBDD. Posiblemente ya existe esa entrada.
+					</div>
+						<%
+					}
+				} else {
+					
+					%>
+					<div class="alert alert-danger">
+					<strong>¡Atención!</strong>Algo ha ido mal, ¡rellena los datos correctamente!
+				</div>
+					<%
+					
+				}
 			}
-			
-			try {
-				controladorClasificacion.insertarNueva(nuevoIdCorredorInt, nuevoIdEtapaInt, nuevoPosicionInt);
-			} catch (Exception e) {
-				out.println("No se ha podido insertar la nueva clasificacion a la BBDD");
-			}
-			
-		}
+
+			ArrayList<Corredor> corredores;
+			corredores = controladorCorredor.seleccionarTodos();
+
+			ArrayList<Etapa> etapas;
+			etapas = controladorEtapa.seleccionarTodas();
+
+			ArrayList<Clasificacion> clasificaciones;
+			clasificaciones = controladorClasificacion.seleccionarTodos();
+	
+
+
+
+				if (nuevaInsercion) {
 		
-		
-		ArrayList<Corredor> corredores;
-		corredores = controladorCorredor.seleccionarTodos();
-		
-		ArrayList<Etapa> etapas;
-		etapas = controladorEtapa.seleccionarTodas();
-		
-		ArrayList<Clasificacion> clasificaciones;
-		clasificaciones = controladorClasificacion.seleccionarTodos();
-		
-		%>
-		
-		
+%>
+			<div class="alert alert-success">
+				Clasificacion insertada <strong>correctamente</strong>.
+			</div>
+
+
+			<%
+				}
+			%>
+
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
 				<form action="formDatos.jsp">
@@ -95,15 +133,18 @@
 						</h3>
 
 						<select class="form-control" name="idCorredor">
-							
-							
+
+
 							<%
-							for (Corredor corr : corredores){
+								for (Corredor corr : corredores) {
 							%>
-							
-							<option value="<%=corr.getId()%>"><%=corr.getNombre()%> <%=corr.getApellido()%></option>
-							
-							<% } %>
+
+							<option value="<%=corr.getId()%>"><%=corr.getNombre()%>
+								<%=corr.getApellido()%></option>
+
+							<%
+								}
+							%>
 						</select>
 
 					</div>
@@ -112,17 +153,21 @@
 						<h3>
 							<span class="label label-default">Etapa</span>
 						</h3>
-<%
-						for (Etapa etap : etapas){
+						<%
+							for (Etapa etap : etapas) {
 						%>
 						<div class="radio">
 							<input type="radio" name="idEtapa" id=""
-								value="<%=etap.getId()%>"><%=etap.getSalida()%> - <%=etap.getLlegada()%>
+								value="<%=etap.getId()%>"><%=etap.getSalida()%>
+							-
+							<%=etap.getLlegada()%>
 						</div>
-						
-						<%} %>
+
+						<%
+							}
+						%>
 					</div>
-					
+
 					<div class="form-group">
 						<h3>
 							<span class="label label-default">Posicion</span>
@@ -139,6 +184,9 @@
 
 		</div>
 		<div class="row">
+
+			
+
 			<div class="col-md-10 col-md-offset-1">
 				<h2>Posicion de todos los corredores</h2>
 				<table class="table">
@@ -147,21 +195,21 @@
 						<th>id corredor</th>
 						<th>posicion</th>
 					</tr>
-					
+
 					<%
-					for (Clasificacion clasif : clasificaciones) {
+						for (Clasificacion clasif : clasificaciones) {
 					%>
-					
+
 					<tr>
 						<td><%=clasif.getId_etapa()%></td>
 						<td><%=clasif.getId_corredor()%></td>
 						<td><%=clasif.getPosicion()%></td>
 					</tr>
-					
+
 					<%
-					}
+						}
 					%>
-					
+
 				</table>
 			</div>
 		</div>

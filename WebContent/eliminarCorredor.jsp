@@ -35,7 +35,7 @@
 						<h3>
 							<span class="label label-default">Nombre de corredor</span>
 						</h3>
-						<input type="text" class="form-control" id="" name="" placeholder="Nombre, Apellido"/>
+						<input type="text" class="form-control" id="" name="nombreApellido" placeholder="Nombre,Apellido"/>
 					</div>
 					<div class="form-group">
 						<div class="col-sm-offset-2 col-sm-10">
